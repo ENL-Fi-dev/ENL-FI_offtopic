@@ -19,9 +19,10 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   const body = req.body;
   try {
-    const enlUser = EnlUser.findOne({userName: body.user.userName});
+    const user = body.user.split('_');
+    const enlUser = EnlUser.findOne({userName: user[0]});
   
-    if (enlUser && enlUser.userValidation === body.user.userValidation) {
+    if (enlUser && enlUser.userValidation === user[1]) {
       const group = new TgGroup({
         name: body.name,
         sheriff: body.sheriff,
