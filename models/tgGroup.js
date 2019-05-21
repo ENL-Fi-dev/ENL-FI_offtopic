@@ -10,7 +10,8 @@ const tgGroupSchema = new mongoose.Schema({
   link: String,
   info: String,
   linkDateTime: Number,
-  linkExpDateTime: Number
+  linkExpDateTime: Number,
+  addedBy: String
 });
 
 const TgGroup = mongoose.model('TgGroup', tgGroupSchema);

@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const TgGroup = require('../models/tgGroup.js');
+const EnlUser = require('../models/enlUser.js');
 
 // Routes for telegram groups
 
@@ -18,19 +19,27 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   const body = req.body;
   try {
-    const group = new TgGroup({
-      name: body.name,
-      sheriff: body.sheriff,
-      link: body.link,
-      info: body.info,
-      linkDateTime: body.linkDateTime,
-      linkExpDateTime: body.linkExpDateTime
-    });
-    await group.save();
+    const enlUser = EnlUser.findOne({userName: body.user.userName});
+  
+    if (enlUser && enlUser.userValidation === body.user.userValidation) {
+      const group = new TgGroup({
+        name: body.name,
+        sheriff: body.sheriff,
+        link: body.link,
+        info: body.info,
+        linkDateTime: body.linkDateTime,
+        linkExpDateTime: body.linkExpDateTime,
+        addedBy: enlUser.userName
+      });
+  
+      await group.save();
+    } else {
+      res.status(400).json({type: 'error', message: 'incorrect validation'});
+    }
     
     res.json(await TgGroup.find({}));
   } catch (e) {
-    res.status(400).send(e, `couldn't add new group`);
+    res.status(400).json({type: 'error', message: `couldn't add new group`});
   }
 });
 

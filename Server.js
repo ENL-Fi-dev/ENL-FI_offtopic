@@ -28,6 +28,7 @@ mongoose.connect(process.env.MONGODB_URI, {useNewUrlParser: true}).then(
 
 //Routes
 const groupRouter = require('./routes/groups.js');
+const userRouter = require('./routes/users.js');
 
 //Applications
 app.route('/')
@@ -37,6 +38,7 @@ app.route('/')
   });
 
 app.use('/api/groups', groupRouter);
+app.use('/api/users', userRouter);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}, listening....now?`)
