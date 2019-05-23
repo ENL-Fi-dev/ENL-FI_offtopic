@@ -19,7 +19,6 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   const body = req.body;
   try {
-    const user = body.user.split('_');
     const enlUser = EnlUser.findOne({userName: user[0]});
   
     if (enlUser && enlUser.userValidation === user[1]) {
@@ -34,13 +33,11 @@ router.post('/', async (req, res) => {
       });
   
       await group.save();
-    } else {
-      res.status(400).json({type: 'error', message: 'incorrect validation'});
     }
     
     res.json(await TgGroup.find({}));
   } catch (e) {
-    res.status(400).json({type: 'error', message: `couldn't add new group`});
+    res.status(400).send(e);
   }
 });
 
