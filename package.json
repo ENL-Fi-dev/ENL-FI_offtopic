@@ -1,6 +1,6 @@
 {
   "name": "tggroupsback",
-  "version": "1.0.4",
+  "version": "1.0.7",
   "private": true,
   "scripts": {
     "start": "node Server.js"
