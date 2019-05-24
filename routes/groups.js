@@ -11,7 +11,7 @@ router.get('/', async (req, res) => {
     const Groups = await TgGroup.find({});
     res.json(Groups);
   } catch (e) {
-    res.status(404).send(e, `couldn't find groups`).end();
+    res.status(404).send(e, 'couldn\'t find groups').end();
   }
 });
 
@@ -19,23 +19,30 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   const body = req.body;
   try {
-    const enlUser = EnlUser.findOne({userName: body.userName});
+    const enlUser = await EnlUser.findOne({userName: body.userName});
   
-    if (enlUser && enlUser.userValidation === body.userValidation) {
-      const group = new TgGroup({
-        name: body.name,
-        sheriff: body.sheriff,
-        link: body.link,
-        info: body.info,
-        linkDateTime: body.linkDateTime,
-        linkExpDateTime: body.linkExpDateTime
-      });
-  
-      await group.save();
+    /*
+    if (!enlUser || enlUser.userValidation !== body.userValidation) {
+      res.status(401).json({type: 'error', message: `insufficient security clearance!`});
     }
-    res.status(201).json(await TgGroup.find({}));
+    await TgGroup.find({})
+    */
+    
+    const group = new TgGroup({
+      name: body.name,
+      sheriff: body.sheriff,
+      link: body.link,
+      info: body.info,
+      linkDateTime: body.linkDateTime,
+      linkExpDateTime: body.linkExpDateTime
+    });
+
+    await group.save();
+
+    res.status(201).json(enlUser);
+    
   } catch (e) {
-    res.status(400).send(e);
+    res.status(400).send({type: 'error', message: 'couldn\'t add group'});
   }
 });
 
