@@ -28,14 +28,12 @@ router.post('/', async (req, res) => {
         link: body.link,
         info: body.info,
         linkDateTime: body.linkDateTime,
-        linkExpDateTime: body.linkExpDateTime,
-        addedBy: enlUser.userName
+        linkExpDateTime: body.linkExpDateTime
       });
   
       await group.save();
     }
-    
-    res.json(await TgGroup.find({}));
+    res.status(201).json(await TgGroup.find({}));
   } catch (e) {
     res.status(400).send(e);
   }

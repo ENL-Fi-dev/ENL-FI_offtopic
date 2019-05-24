@@ -1,13 +1,9 @@
 {
   "name": "tggroupsback",
-  "version": "1.3.3",
+  "version": "1.3.4",
   "private": true,
   "scripts": {
     "start": "node Server.js"
-  },
-  "engines":{
-    "node": "11.x",
-    "npm": "6.x"
   },
   "dependencies": {
     "axios": "^0.18.0",
