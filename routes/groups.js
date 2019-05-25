@@ -39,7 +39,7 @@ router.post('/', async (req, res) => {
 
     await group.save();
 
-    res.status(201).json(enlUser);
+    res.status(201).json(await TgGroup.find({}));
     
   } catch (e) {
     res.status(400).send({type: 'error', message: 'couldn\'t add group'});
