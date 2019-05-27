@@ -6,7 +6,9 @@ const mongoose = require('mongoose');
 
 const enlUserSchema = new mongoose.Schema({
   userName: String,
-  userValidation: String
+  userValidation: String,
+  role: String,
+  active: Boolean
 });
 
 const EnlUser = mongoose.model('EnlUser', enlUserSchema);

@@ -2,6 +2,17 @@ const router = require('express').Router();
 const TgGroup = require('../models/tgGroup.js');
 const EnlUser = require('../models/enlUser.js');
 
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+
+const getTokenFrom = (request) => {
+  const auth = request.get('Authorization');
+  if (auth && auth.toLowerCase().startsWith('bearer')) {
+    return auth.substring(7);
+  }
+  return null;
+};
+
 // Routes for telegram groups
 
 // GET-route
@@ -20,13 +31,11 @@ router.post('/', async (req, res) => {
   const body = req.body;
   try {
     const enlUser = await EnlUser.findOne({userName: body.userName});
-  
-    /*
-    if (!enlUser || enlUser.userValidation !== body.userValidation) {
-      res.status(401).json({type: 'error', message: `insufficient security clearance!`});
+    const validationCorrect = enlUser === null ? false : bcrypt.compare(body.userValidation, enlUser.userValidation);
+    
+    if (!(enlUser && validationCorrect)) {
+      return res.status(401).json({error: `insufficient security clearance!`});
     }
-    await TgGroup.find({})
-    */
     
     const group = new TgGroup({
       name: body.name,
@@ -34,7 +43,8 @@ router.post('/', async (req, res) => {
       link: body.link,
       info: body.info,
       linkDateTime: body.linkDateTime,
-      linkExpDateTime: body.linkExpDateTime
+      linkExpDateTime: body.linkExpDateTime,
+      addedBy: enlUser.userName
     });
 
     await group.save();
@@ -42,7 +52,7 @@ router.post('/', async (req, res) => {
     res.status(201).json(await TgGroup.find({}));
     
   } catch (e) {
-    res.status(400).send({type: 'error', message: 'couldn\'t add group'});
+    res.status(400).send({error: 'couldn\'t add group'});
   }
 });
 

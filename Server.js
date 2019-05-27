@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 //mLab connection
-mongoose.connect(process.env.MONGODB_URI, {useNewUrlParser: true}).then(
+mongoose.connect(process.env.MONGODB_URI_PROD, {useNewUrlParser: true}).then(
   () => {
     console.log('mLab connection > successful');
   },
@@ -29,6 +29,7 @@ mongoose.connect(process.env.MONGODB_URI, {useNewUrlParser: true}).then(
 //Routes
 const groupRouter = require('./routes/groups.js');
 const userRouter = require('./routes/users.js');
+const loginRouter = require('./routes/login.js');
 
 //Applications
 app.route('/')
@@ -39,6 +40,7 @@ app.route('/')
 
 app.use('/api/groups', groupRouter);
 app.use('/api/users', userRouter);
+app.use('/api/login', loginRouter);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}, listening....now?`)
