@@ -20,6 +20,7 @@ router.get('/', async (req, res) => {
   const body = req.body;
   try {
     const Groups = await TgGroup.find({});
+    Groups.sort((a, b) => (a.name > b.name) ? 1 : -1);
     res.json(Groups);
   } catch (e) {
     res.status(404).send(e, 'couldn\'t find groups').end();
@@ -49,7 +50,9 @@ router.post('/', async (req, res) => {
 
     await group.save();
 
-    res.status(201).json(await TgGroup.find({}));
+    const groups = await TgGroup.find({});
+    groups.sort((a, b) => (a.name > b.name) ? 1 : -1);
+    res.status(201).json(groups);
     
   } catch (e) {
     res.status(400).send({error: 'couldn\'t add group'});
