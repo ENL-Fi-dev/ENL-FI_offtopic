@@ -2,16 +2,7 @@ const router = require('express').Router();
 const TgGroup = require('../models/tgGroup.js');
 const EnlUser = require('../models/enlUser.js');
 
-const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-
-const getTokenFrom = (request) => {
-  const auth = request.get('Authorization');
-  if (auth && auth.toLowerCase().startsWith('bearer')) {
-    return auth.substring(7);
-  }
-  return null;
-};
 
 // Routes for telegram groups
 

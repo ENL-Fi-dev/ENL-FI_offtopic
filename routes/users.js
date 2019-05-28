@@ -5,7 +5,6 @@
 const router = require('express').Router();
 const EnlUser = require('../models/enlUser.js');
 
-const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
 const getTokenFrom = (request) => {
