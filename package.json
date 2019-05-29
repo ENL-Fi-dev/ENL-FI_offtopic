@@ -1,7 +1,16 @@
 {
   "name": "tggroupsback",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "private": true,
+  "main": "Server.js",
+  "repository":
+    {
+      "type": "git",
+      "url": "git+https://gitlab.com/enl-suomi/telegram-groups-build.git"
+    },
+  "bugs": {
+    "url": "https://gitlab.com/enl-suomi/telegram-groups-build/issues"
+  },
   "scripts": {
     "start": "node Server.js"
   },
