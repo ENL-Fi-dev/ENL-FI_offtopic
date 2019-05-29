@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 //mLab connection
-mongoose.connect(process.env.MONGODB_URI_PROD, {useNewUrlParser: true}).then(
+mongoose.connect(process.env.MONGODB_URI, {useNewUrlParser: true}).then(
   () => {
     console.log('mLab connection > successful');
   },
