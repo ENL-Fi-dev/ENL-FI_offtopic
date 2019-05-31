@@ -62,25 +62,30 @@ router.post('/', async (req, res) => {
 });
 
 // DELETE-route
-router.delete('/:name', async (req, res) => {
-  const body = req.body;
+router.delete('/:groupId', async (req, res) => {
+  const params = req.body;
   try {
-    const enlUser = EnlUser.findOne({userName: body.userName});
-    const validationCorrect = enlUser === null ? false : bcrypt.compare(body.userValidation, enlUser.userValidation);
+    const enlUser = await EnlUser.findOne({userName: params.userName});
+    const validationCorrect = enlUser === null ? false : bcrypt.compare(params.userValidation, enlUser.userValidation);
     
     if (!(enlUser && validationCorrect)) {
-      return res.status(401).json({error: 'insufficient security clearance'});
+      res.status(401).json({error: 'insufficient security clearance'})
     }
+  
+    await TgGroup.findByIdAndDelete({_id: params.groupId});
+  
+    const groups = await TgGroup.find({});
+    groups.sort((a, b) => (a.name > b.name) ? 1 : -1);
+  
+    res.status(200).json(groups);
     
-    await TgGroup.findOneAndDelete({name: body.name});
-    res.status(204).end();
   } catch (e) {
     res.status(400).end();
   }
 });
 
 // PUT-route
-router.put('/:name', async (req, res) => {
+router.put('/', async (req, res) => {
   const body = req.body;
   try {
     const enlUser = EnlUser.findOne({userName: body.userName});
@@ -90,7 +95,7 @@ router.put('/:name', async (req, res) => {
       return res.status(401).json({error: 'insufficient security clearance'});
     }
     
-    await TgGroup.findByIdAndUpdate(
+    await TgGroup.findAndModify(
       {name: body.name},
       { $set: {name: body.name, sheriff: body.sheriff, link: body.link, info: body.info, linkDateTime: body.linkDateTime, linkExpDateTime: body.linkExpDateTime, addedBy: enlUser.userName}});
     
