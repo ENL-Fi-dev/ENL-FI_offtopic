@@ -45,18 +45,18 @@ router.put('/', async (req, res) => {
   
     if (!(enlUser && validationCorrect)) {
       return res.status(401).json({error: 'insufficient security clearance'});
-    }
+    } else {
+      const saltRounds = 10;
+      const validationHash = await bcrypt.hash(body.newUserValidation, saltRounds);
   
-    const saltRounds = 10;
-    const validationHash = await bcrypt.hash(body.newUserValidation, saltRounds);
-    
-    await EnlUser.findOneAndReplace(
-      {userName: body.userName},
-      {
-        userName: body.userName,
-        userValidation: validationHash});
-    
-    res.status(202).end();
+      await EnlUser.findOneAndReplace(
+        {userName: body.userName},
+        {
+          userName: body.userName,
+          userValidation: validationHash});
+  
+      res.status(202).end();
+    }
   } catch (e) {
     res.status(400).end();
   }
