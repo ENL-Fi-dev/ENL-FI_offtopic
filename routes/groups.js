@@ -95,9 +95,16 @@ router.put('/', async (req, res) => {
       return res.status(401).json({error: 'insufficient security clearance'});
     }
     
-    await TgGroup.findAndModify(
+    await TgGroup.findOneAndReplace(
       {name: body.name},
-      { $set: {name: body.name, sheriff: body.sheriff, link: body.link, info: body.info, linkDateTime: body.linkDateTime, linkExpDateTime: body.linkExpDateTime, addedBy: enlUser.userName}});
+      {
+        name: body.name,
+        sheriff: body.sheriff,
+        link: body.link,
+        info: body.info,
+        linkDateTime: body.linkDateTime,
+        linkExpDateTime: body.linkExpDateTime,
+        addedBy: enlUser.userName});
     
     const groups = await TgGroup.find({});
     groups.sort((a, b) => (a.name > b.name) ? 1 : -1);

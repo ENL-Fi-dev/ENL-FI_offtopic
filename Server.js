@@ -37,6 +37,11 @@ app.route('/')
     app.use(express.static('build'));
     res.sendFile(path.join(__dirname, '/build/index.html'));
   });
+app.route('/registration')
+  .get((req, res) => {
+    app.use(express.static('build'));
+    res.sendFile(path.join(__dirname, '/build/index.html'));
+  });
 
 app.use('/api/groups', groupRouter);
 app.use('/api/users', userRouter);
