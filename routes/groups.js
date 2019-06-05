@@ -37,7 +37,7 @@ router.post('/', async (req, res) => {
     const validationCorrect = enlUser === null ? false : bcrypt.compare(body.userValidation, enlUser.userValidation);
     
     if (!(enlUser && validationCorrect)) {
-      return res.status(401).json({error: `insufficient security clearance!`});
+      return res.status(401).json({error: 'insufficient security clearance'}).end();
     } else {
       const group = new TgGroup({
         name: body.name,
@@ -53,7 +53,7 @@ router.post('/', async (req, res) => {
   
       const groups = await TgGroup.find({});
       groups.sort((a, b) => (a.name > b.name) ? 1 : -1);
-      res.status(201).json(groups);
+      return res.status(201).json(groups).end();
     }
     
   } catch (e) {
@@ -92,7 +92,7 @@ router.put('/', async (req, res) => {
     const validationCorrect = enlUser === null ? false : bcrypt.compare(body.userValidation, enlUser.userValidation);
     
     if (!(enlUser && validationCorrect)) {
-      return res.status(401).json({error: 'insufficient security clearance'});
+      return res.status(401).json({error: 'insufficient security clearance'}).end();
     } else {
       await TgGroup.findOneAndReplace(
         {name: body.name},
@@ -108,7 +108,7 @@ router.put('/', async (req, res) => {
       const groups = await TgGroup.find({});
       groups.sort((a, b) => (a.name > b.name) ? 1 : -1);
   
-      res.status(202).json(groups);
+      return res.status(202).json(groups).end();
     }
   } catch (e) {
     res.status(400).end();
