@@ -69,14 +69,14 @@ router.delete('/:groupId', async (req, res) => {
     const validationCorrect = enlUser === null ? false : bcrypt.compare(req.params.userValidation, enlUser.userValidation);
     
     if (!(enlUser && validationCorrect)) {
-      res.status(401).json({error: 'insufficient security clearance'})
+      return res.status(401).json({error: 'insufficient security clearance'}).end();
     } else {
       await TgGroup.findByIdAndDelete({_id: req.params.groupId});
   
       const groups = await TgGroup.find({});
       groups.sort((a, b) => (a.name > b.name) ? 1 : -1);
   
-      res.status(200).json(groups);
+      return res.status(200).json(groups).end();
     }
     
   } catch (e) {
