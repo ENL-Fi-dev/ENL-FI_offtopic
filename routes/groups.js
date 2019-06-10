@@ -3,6 +3,15 @@ const TgGroup = require('../models/tgGroup.js');
 const EnlUser = require('../models/enlUser.js');
 
 const bcrypt = require('bcrypt');
+const jwt = require("jsonwebtoken");
+
+const getTokenFrom = (request) => {
+  const authorization = request.get('Authorization');
+  if (authorization && authorization.toLowerCase().startsWith('bearer')) {
+    return authorization.substring(7);
+  }
+  return null;
+};
 
 // Routes for telegram groups
 
@@ -33,9 +42,16 @@ router.get('/:addedBy', async (req, res) => {
 router.post('/', async (req, res) => {
   const body = req.body;
   try {
-    const enlUser = await EnlUser.findOne({userName: body.userName});
-    const validationCorrect = enlUser === null ? false : bcrypt.compare(body.userValidation, enlUser.userValidation);
-    
+    const token = getTokenFrom(req);
+    const decodedToken = jwt.verify(token, process.env.BACKEND_SECRET);
+  
+    if (!token || !decodedToken.userId) {
+      return res.status(401).json({error: 'token invalid or missing'}).end();
+    }
+  
+    const enlUser = await EnlUser.findById(decodedToken.userId);
+    const validationCorrect = enlUser === null ? false : bcrypt.compare(req.params.userValidation, enlUser.userValidation);
+  
     if (!(enlUser && validationCorrect)) {
       return res.status(401).json({error: 'insufficient security clearance'}).end();
     } else {
@@ -65,7 +81,14 @@ router.post('/', async (req, res) => {
 router.delete('/:groupId', async (req, res) => {
   
   try {
-    const enlUser = await EnlUser.find({userName: req.params.userName});
+    const token = getTokenFrom(req);
+    const decodedToken = jwt.verify(token, process.env.BACKEND_SECRET);
+    
+    if (!token || !decodedToken.userId) {
+      return res.status(401).json({error: 'token invalid or missing'}).end();
+    }
+    
+    const enlUser = await EnlUser.findById(decodedToken.userId);
     const validationCorrect = enlUser === null ? false : bcrypt.compare(req.params.userValidation, enlUser.userValidation);
     
     if (!(enlUser && validationCorrect)) {
@@ -88,9 +111,16 @@ router.delete('/:groupId', async (req, res) => {
 router.put('/', async (req, res) => {
   const body = req.body;
   try {
-    const enlUser = EnlUser.findOne({userName: body.userName});
-    const validationCorrect = enlUser === null ? false : bcrypt.compare(body.userValidation, enlUser.userValidation);
-    
+    const token = getTokenFrom(req);
+    const decodedToken = jwt.verify(token, process.env.BACKEND_SECRET);
+  
+    if (!token || !decodedToken.userId) {
+      return res.status(401).json({error: 'token invalid or missing'}).end();
+    }
+  
+    const enlUser = await EnlUser.findById(decodedToken.userId);
+    const validationCorrect = enlUser === null ? false : bcrypt.compare(req.params.userValidation, enlUser.userValidation);
+  
     if (!(enlUser && validationCorrect)) {
       return res.status(401).json({error: 'insufficient security clearance'}).end();
     } else {

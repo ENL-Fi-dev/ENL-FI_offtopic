@@ -25,7 +25,9 @@ router.post('/', async (req, res) => {
     
     const enlUser = new EnlUser({
       userName: body.userName,
-      userValidation: validationHash
+      userValidation: validationHash,
+      userRole: role,
+      active: true
     });
   
     await enlUser.save();
@@ -53,7 +55,9 @@ router.put('/', async (req, res) => {
         {userName: body.userName},
         {
           userName: body.userName,
-          userValidation: validationHash});
+          userValidation: validationHash,
+          userRole: enlUser.role,
+          active: enlUser.active});
   
       res.status(202).end();
     }
