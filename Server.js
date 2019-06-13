@@ -25,6 +25,7 @@ mongoose.connect(process.env.MONGODB_URI, {useNewUrlParser: true}).then(
     console.log('mLab connection > error occured:', err);
   }
 );
+mongoose.set('useFindAndModify', false);
 
 //Routes
 const groupRouter = require('./routes/groups.js');

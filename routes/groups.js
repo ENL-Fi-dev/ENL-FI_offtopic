@@ -2,8 +2,7 @@ const router = require('express').Router();
 const TgGroup = require('../models/tgGroup.js');
 const EnlUser = require('../models/enlUser.js');
 
-const bcrypt = require('bcrypt');
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
 
 const getTokenFrom = (request) => {
   const authorization = request.get('Authorization');
@@ -23,7 +22,7 @@ router.get('/', async (req, res) => {
     Groups.sort((a, b) => (a.name > b.name) ? 1 : -1);
     res.json(Groups);
   } catch (e) {
-    res.status(404).send(e, 'couldn\'t find groups').end();
+    res.status(404).send(e, 'couldn\'t find groups');
   }
 });
 
@@ -34,7 +33,7 @@ router.get('/:addedBy', async (req, res) => {
     Groups.sort((a, b) => (a.name > b.name) ? 1 : -1);
     res.json(Groups);
   } catch (e) {
-    res.status(404).send(e, 'couldn\'t find groups').end();
+    res.status(404).send(e, 'couldn\'t find groups');
   }
 });
 
@@ -46,20 +45,17 @@ router.post('/', async (req, res) => {
     const decodedToken = jwt.verify(token, process.env.BACKEND_SECRET);
   
     if (!token || !decodedToken.userId) {
-      return res.status(401).json({error: 'token invalid or missing'}).end();
+      return res.status(401).json({error: 'token invalid or missing'});
     }
   
     const enlUser = await EnlUser.findById(decodedToken.userId);
-    const validationCorrect = enlUser === null ? false : bcrypt.compare(req.params.userValidation, enlUser.userValidation);
-  
-    if (!(enlUser && validationCorrect)) {
-      return res.status(401).json({error: 'insufficient security clearance'}).end();
-    } else {
+    
+    if (enlUser !== null) {
       const group = new TgGroup({
         name: body.name,
         sheriff: body.sheriff,
         link: body.link,
-        info: body.info,
+        info: body.groupInfo,
         linkDateTime: body.linkDateTime,
         linkExpDateTime: body.linkExpDateTime,
         addedBy: enlUser.userName
@@ -69,9 +65,10 @@ router.post('/', async (req, res) => {
   
       const groups = await TgGroup.find({});
       groups.sort((a, b) => (a.name > b.name) ? 1 : -1);
-      return res.status(201).json(groups).end();
+      return res.status(201).json(groups);
+    } else {
+      return res.status(401).send({error: 'insufficient security clearance'});
     }
-    
   } catch (e) {
     res.status(400).send({error: 'couldn\'t add group'});
   }
@@ -85,52 +82,47 @@ router.delete('/:groupId', async (req, res) => {
     const decodedToken = jwt.verify(token, process.env.BACKEND_SECRET);
     
     if (!token || !decodedToken.userId) {
-      return res.status(401).json({error: 'token invalid or missing'}).end();
+      return res.status(401).json({error: 'token invalid or missing'});
     }
     
     const enlUser = await EnlUser.findById(decodedToken.userId);
-    const validationCorrect = enlUser === null ? false : bcrypt.compare(req.params.userValidation, enlUser.userValidation);
-    
-    if (!(enlUser && validationCorrect)) {
-      return res.status(401).json({error: 'insufficient security clearance'}).end();
-    } else {
-      await TgGroup.findByIdAndDelete({_id: req.params.groupId});
+  
+    if (enlUser !== null) {
+      await TgGroup.findByIdAndDelete(req.params.groupId);
   
       const groups = await TgGroup.find({});
       groups.sort((a, b) => (a.name > b.name) ? 1 : -1);
   
-      return res.status(200).json(groups).end();
+      return res.status(200).json(groups);
+    } else {
+      return res.status(401).send({error: 'insufficient security clearance'});
     }
-    
   } catch (e) {
-    res.status(400).end();
+    res.status(400).send({error: 'couldn\'t delete group'});
   }
 });
 
 // PUT-route
-router.put('/', async (req, res) => {
+router.put('/:groupId', async (req, res) => {
   const body = req.body;
   try {
     const token = getTokenFrom(req);
     const decodedToken = jwt.verify(token, process.env.BACKEND_SECRET);
   
     if (!token || !decodedToken.userId) {
-      return res.status(401).json({error: 'token invalid or missing'}).end();
+      return res.status(401).json({error: 'token invalid or missing'});
     }
   
     const enlUser = await EnlUser.findById(decodedToken.userId);
-    const validationCorrect = enlUser === null ? false : bcrypt.compare(req.params.userValidation, enlUser.userValidation);
-  
-    if (!(enlUser && validationCorrect)) {
-      return res.status(401).json({error: 'insufficient security clearance'}).end();
-    } else {
-      await TgGroup.findOneAndReplace(
-        {name: body.name},
+    
+    if (enlUser !== null) {
+      await TgGroup.findByIdAndUpdate(
+        req.params.groupId,
         {
           name: body.name,
           sheriff: body.sheriff,
           link: body.link,
-          info: body.info,
+          info: body.groupInfo,
           linkDateTime: body.linkDateTime,
           linkExpDateTime: body.linkExpDateTime,
           addedBy: enlUser.userName});
@@ -138,10 +130,12 @@ router.put('/', async (req, res) => {
       const groups = await TgGroup.find({});
       groups.sort((a, b) => (a.name > b.name) ? 1 : -1);
   
-      return res.status(202).json(groups).end();
+      return res.status(202).json(groups);
+    } else {
+      return res.status(401).send({error: 'insufficient security clearance'});
     }
   } catch (e) {
-    res.status(400).end();
+    res.status(400).send({error: 'couldn\'t update group'});
   }
 });
 
