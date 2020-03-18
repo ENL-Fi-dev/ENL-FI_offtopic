@@ -3,34 +3,28 @@
 // project backend main file, responsible of running entire backend, connecting to database and
 // serve frontend application
 
-if (process.env.NODE_ENV !== 'prod' || process.env.NODE_ENV !== 'production') {
-  require('dotenv').config();
-}
+const config = require('./utils/config.js');
 let express = require('express'),
   app = express(),
-  PORT = process.env.NODE_ENV === 'prod' || process.env.NODE_ENV === 'production' ? process.env.PORT : 3015;
+  PORT = config.port;
+const http = require('http');
 const path = require('path');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const apolloServer = require('./graphql/gql_server');
 
+// mongoose options
+mongoose.set('useFindAndModify', false);
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useUnifiedTopology', true);
+mongoose.set('useCreateIndex', true);
+
+// app usages
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
-//mLab connection
-mongoose.connect(process.env.MONGODB_URI, {useNewUrlParser: true}).then(
-  () => {
-    console.log('mLab connection > successful');
-  },
-  err => {
-    console.log('mLab connection > error occured:', err);
-  }
-);
-mongoose.set('useFindAndModify', false);
-
-//Routes
-const groupRouter = require('./routes/groups.js');
-const userRouter = require('./routes/users.js');
-const loginRouter = require('./routes/login.js');
+mongoose.connect(config.mongo).then(res => res.error
+  ? console.error('connect:ATLAS:failure') : console.log('connect:ATLAS:success'));
 
 //Applications
 app.route('/')
@@ -38,16 +32,9 @@ app.route('/')
     app.use(express.static('build'));
     res.sendFile(path.join(__dirname, '/build/index.html'));
   });
-app.route('/registration')
-  .get((req, res) => {
-    app.use(express.static('build'));
-    res.sendFile(path.join(__dirname, '/build/index.html'));
-  });
 
-app.use('/api/groups', groupRouter);
-app.use('/api/users', userRouter);
-app.use('/api/login', loginRouter);
+apolloServer.applyMiddleware({ app, path: '/graphql' });
+const server = http.createServer(app);
+apolloServer.installSubscriptionHandlers(server);
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}, listening....now?`)
-});
+server.listen(PORT, () => console.log(`Server running on port ${PORT}, listening....now?`));
