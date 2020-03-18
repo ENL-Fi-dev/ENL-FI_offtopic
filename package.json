@@ -1,35 +1,89 @@
 {
   "name": "tggroupsback",
-  "version": "2.9.0",
+  "version": "3.0.1",
   "private": true,
   "main": "Server.js",
-  "repository":
-    {
-      "type": "git",
-      "url": "git+https://gitlab.com/enl-suomi/telegram-groups-build.git"
-    },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/enl-suomi/telegram-groups-build.git"
+  },
   "bugs": {
     "url": "https://gitlab.com/enl-suomi/telegram-groups-build/issues"
   },
   "scripts": {
-    "start": "node Server.js"
+    "start": "NODE_ENV=production node Server.js",
+    "node": "NODE_ENV=development node Server.js",
+    "watch": "NODE_ENV=development nodemon Server.js",
+    "watch:stage": "NODE_ENV=staging nodemon Server.js"
   },
   "engines": {
     "node": "11.x",
     "npm": "6.x"
   },
   "dependencies": {
+    "apollo-server-express": "^2.11.0",
     "axios": "^0.18.0",
     "bcrypt": "^3.0.4",
-    "body-parser": "latest",
-    "cookie-parser": "~1.4.4",
+    "body-parser": "^1.19.0",
+    "bson": "^4.0.3",
+    "bson-ext": "^2.0.3",
+    "cookie-parser": "^1.4.5",
     "debug": "~2.6.9",
     "dotenv": "^8.0.0",
     "express": "~4.16.1",
+    "express-graphql": "^0.9.0",
     "jsonwebtoken": "^8.5.0",
-    "mongodb": "^3.1.13",
-    "mongoose": "^5.5.9",
+    "mongodb": "^3.5.5",
+    "mongoose": "^5.9.4",
     "morgan": "~1.9.1",
-    "node-gyp": "^4.0.0"
+    "node-gyp": "^4.0.0",
+    "subscriptions-transport-ws": "^0.9.16"
+  },
+  "devDependencies": {
+    "apollo-client": "^2.6.4",
+    "apollo-utilities": "latest",
+    "axios": "^0.18.1",
+    "babel-jest": "^24.9.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
+    "cors": "^2.8.5",
+    "easygraphql-tester": "^5.1.6",
+    "eslint": "^6.6.0",
+    "graphql-tag": "latest",
+    "jest": "^24.9.0",
+    "nodemon": "^1.19.4",
+    "ws": "latest",
+    "cypress": "^3.8.2",
+    "eslint-plugin-cypress": "^2.8.1"
+  },
+  "proxy": "http://localhost:4005/",
+  "jest": {
+    "collectCoverage": true,
+    "coverageReporters": [
+      "html",
+      "text",
+      "json"
+    ],
+    "notify": true,
+    "notifyMode": "always",
+    "verbose": true,
+    "testEnvironment": "node",
+    "testPathIgnorePatterns": [
+      "./node_modules/*",
+      "./build"
+    ]
+  },
+  "babel": {
+    "env": {
+      "development": {
+        "plugins": [
+          "transform-es2015-modules-commonjs"
+        ]
+      },
+      "test": {
+        "plugins": [
+          "transform-es2015-modules-commonjs"
+        ]
+      }
+    }
   }
 }

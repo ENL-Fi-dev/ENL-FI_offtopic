@@ -5,10 +5,23 @@
 const mongoose = require('mongoose');
 
 const enlUserSchema = new mongoose.Schema({
-  userName: String,
-  userValidation: String,
-  role: String,
-  active: Boolean
+  username: {
+    required: true,
+    unique: true,
+    type: String
+  },
+  pwHash: {
+    required: true,
+    type: String
+  },
+  role: {
+    required: true,
+    type: String
+  },
+  active: {
+    required: true,
+    type: Boolean
+  }
 });
 
 const EnlUser = mongoose.model('EnlUser', enlUserSchema);
