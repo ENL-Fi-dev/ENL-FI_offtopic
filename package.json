@@ -10,10 +10,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/RedFoxFinn/ENL-FI_offtopic.git"
+    "url": "git+https://github.com/ENL-Fi-dev/ENL-FI_offtopic.git"
   },
   "bugs": {
-    "url": "https://github.com/RedFoxFinn/ENL-FI_offtopic/issues"
+    "url": "https://github.com/ENL-Fi-dev/ENL-FI_offtopic/issues"
   },
   "author": "RedFoxFinn",
   "license": "ISC",
