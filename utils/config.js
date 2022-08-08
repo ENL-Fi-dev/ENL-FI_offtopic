@@ -3,16 +3,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const MONGODB_URI = () => {
-  switch (process.env.NODE_ENV) {
-    case 'production':
-      return process.env.MONGODB_URI_PROD;
-    case 'development':
-      return process.env.MONGODB_URI_DEV;
-    case 'staging':
-      return process.env.MONGODB_URI_PROD;
-    default:
-      return process.env.MONGODB_URI_DEV;
-  }
+  return process.env.MONGODB_URI;
 };
 
 const PORT = process.env.PORT || 4015;

@@ -1,59 +1,32 @@
 {
-  "name": "tggroupsback",
-  "version": "3.0.2",
-  "private": true,
+  "name": "telegram-groups-back",
+  "version": "4.0.0",
+  "description": "ENL Fi Offtopic Telegram-link tool",
   "main": "Server.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://gitlab.com/enl-suomi/telegram-groups-build.git"
-  },
-  "bugs": {
-    "url": "https://gitlab.com/enl-suomi/telegram-groups-build/issues"
-  },
   "scripts": {
     "start": "NODE_ENV=production node Server.js",
-    "node": "NODE_ENV=development node Server.js",
     "watch": "NODE_ENV=development nodemon Server.js",
-    "watch:stage": "NODE_ENV=staging nodemon Server.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "engines": {
-    "node": "11.x",
-    "npm": "6.x"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RedFoxFinn/ENL-FI_offtopic.git"
   },
+  "bugs": {
+    "url": "https://github.com/RedFoxFinn/ENL-FI_offtopic/issues"
+  },
+  "author": "RedFoxFinn",
+  "license": "ISC",
   "dependencies": {
-    "apollo-server-express": "^2.11.0",
-    "axios": "^0.18.0",
-    "bcrypt": "^3.0.4",
-    "body-parser": "^1.19.0",
-    "bson": "^4.0.3",
-    "bson-ext": "^2.0.3",
-    "cookie-parser": "^1.4.5",
-    "debug": "~2.6.9",
-    "dotenv": "^8.0.0",
-    "express": "~4.16.1",
-    "express-graphql": "^0.9.0",
-    "jsonwebtoken": "^8.5.0",
-    "mongodb": "^3.5.5",
-    "mongoose": "^5.9.4",
-    "morgan": "~1.9.1",
-    "node-gyp": "^4.0.0",
-    "subscriptions-transport-ws": "^0.9.16"
-  },
-  "devDependencies": {
-    "apollo-client": "^2.6.4",
-    "apollo-utilities": "latest",
-    "axios": "^0.18.1",
-    "babel-jest": "^24.9.0",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
-    "cors": "^2.8.5",
-    "easygraphql-tester": "^5.1.6",
-    "eslint": "^6.6.0",
-    "graphql-tag": "latest",
-    "jest": "^24.9.0",
-    "nodemon": "^1.19.4",
-    "ws": "latest",
-    "cypress": "^3.8.2",
-    "eslint-plugin-cypress": "^2.8.1"
+    "@graphql-tools/schema": "^8.5.1",
+    "apollo-server-core": "^3.10.0",
+    "apollo-server-express": "^3.10.0",
+    "bcrypt": "^5.0.1",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "graphql": "^16.5.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.5.1"
   },
   "proxy": "http://localhost:4005/",
   "jest": {
@@ -85,5 +58,8 @@
         ]
       }
     }
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.19"
   }
 }

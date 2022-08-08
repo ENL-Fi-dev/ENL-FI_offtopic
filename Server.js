@@ -11,34 +11,40 @@ const http = require('http');
 const path = require('path');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const apolloServer = require('./graphql/gql_server');
-
-// mongoose options
-mongoose.set('useFindAndModify', false);
-mongoose.set('useNewUrlParser', true);
-mongoose.set('useUnifiedTopology', true);
-mongoose.set('useCreateIndex', true);
+const { createAPI } = require('./graphql/api');
 
 // app usages
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
 
-try {
-  mongoose.connect(config.mongo);
-  console.log('connect:ATLAS:success');
-} catch (e) {
-  console.error('connect:ATLAS:failure');
-}
+const initBodyparser = () => {
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: false }));
+};
+
+const initMongoose = () => {
+  try {
+    mongoose.connect(config.mongo);
+    console.log('connect:ATLAS:success');
+  } catch (e) {
+    console.error('connect:ATLAS:failure');
+  }
+};
 
 //Applications
+/*
 app.route('/')
   .get((req, res) => {
-    app.use(express.static('build'));
-    res.sendFile(path.join(__dirname, '/build/index.html'));
+    res.send('wait, what?');
   });
+*/
 
-apolloServer.applyMiddleware({ app, path: '/graphql' });
-const server = http.createServer(app);
-apolloServer.installSubscriptionHandlers(server);
+const startSequence = async () => {
+  initBodyparser();
+  initMongoose();
+  const httpServer = http.createServer(app);
+  const gAPI = await createAPI(httpServer);
+  await gAPI.start();
+  gAPI.applyMiddleware({ app: app, path: ['/api', '/graphql'] });
+  app.listen(PORT, () => console.log(`Server running on port ${PORT} in ${process.env.NODE_ENV} environment, listening....now?`));
+};
 
-server.listen(PORT, () => console.log(`Server running on port ${PORT}, listening....now?`));
+startSequence();

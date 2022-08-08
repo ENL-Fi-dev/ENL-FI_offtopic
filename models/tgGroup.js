@@ -40,8 +40,7 @@ const tgGroupSchema = new mongoose.Schema({
   },
   addedBy: {
     required: true,
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'EnlUser'
+    type: String
   }
 });
 
