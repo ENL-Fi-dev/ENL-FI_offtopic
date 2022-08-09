@@ -19,7 +19,7 @@ For these joining links we have created this fairly simple application.
 
 [API](https://github.com/ENL-Fi-dev/ENL-FI_offtopic/tree/api)
 
-[Front](https://github.com/ENL-Fi-dev/ENL-FI_offtopic)
+[Front](https://github.com/ENL-Fi-dev/ENL-FI_offtopic/tree/front)
 
 ### ENL Fi
 
